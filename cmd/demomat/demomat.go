@@ -16,6 +16,7 @@ func main() {
 	dump(x)
 }
 
+// dump information about matrix
 func dump(m mat.Matrix) {
 	r, c := m.Dims()
 	fmt.Println("Dimensions (rows, cols) : ", r, c)
