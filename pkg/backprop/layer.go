@@ -17,16 +17,27 @@ type Layer struct {
 func NewLayer(in, out int, activation Activation) *Layer {
 	lay := new(Layer)
 	lay.nbin, lay.nbout = in, out
+	// The w matrix contains both weights and biais(its last LINE).
 	lay.w = mat.NewDense(in+1, out, nil)
 	lay.act = activation
 	return lay
 }
 
+// Weights returns a view (slice) fo the weights
+func (lay *Layer) Weights() mat.Matrix {
+	return lay.w.Slice(0, lay.nbin, 0, lay.nbout)
+}
+
+// Biais returns a view (slice) of the Biais
+func (lay *Layer) Biais() mat.Matrix {
+	return lay.w.Slice(lay.nbin, lay.nbin+1, 0, lay.nbout)
+}
+
 // Dump will printout the layer in a readable format.
 func (lay *Layer) Dump() {
 	fmt.Printf("Layer dump : from %d nodes => %d nodes\n", lay.nbin, lay.nbout)
-	fmt.Printf("Weight :\n%v\n", mat.Formatted(lay.w.Slice(0, lay.nbin, 0, lay.nbout)))
-	fmt.Printf("Bias :\n%v\n", mat.Formatted(lay.w.Slice(lay.nbin, lay.nbin+1, 0, lay.nbout)))
+	fmt.Printf("Weight :\n%v\n", mat.Formatted(lay.Weights()))
+	fmt.Printf("Bias :\n%v\n", mat.Formatted(lay.Biais()))
 }
 
 // Forward pass on mini batch x
