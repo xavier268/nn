@@ -1,4 +1,4 @@
-package mynn
+package backprop
 
 import (
 	"fmt"
