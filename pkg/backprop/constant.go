@@ -24,7 +24,7 @@ func (cm *ConstantMat) Dims() (r int, c int) {
 }
 
 // T implements the Matrix interface
+// The receiver IS NOT modified
 func (cm *ConstantMat) T() mat.Matrix {
-	cm.r, cm.c = cm.c, cm.r
-	return cm
+	return &ConstantMat{cm.v, cm.c, cm.r}
 }

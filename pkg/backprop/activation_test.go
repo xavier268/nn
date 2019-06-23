@@ -31,10 +31,3 @@ func TestSigmoid(t *testing.T) {
 	check(t, Sigmoid(200, true)-1)
 	check(t, Sigmoid(-200, true))
 }
-
-func check(t *testing.T, v float64) {
-	if math.Abs(v) >= 1e-20 {
-		fmt.Printf("The value %f should have been nul or very small ?", v)
-		t.Fail()
-	}
-}

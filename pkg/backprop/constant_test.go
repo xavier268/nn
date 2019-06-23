@@ -3,15 +3,31 @@ package backprop
 import (
 	"fmt"
 	"testing"
-
-	"gonum.org/v1/gonum/mat"
 )
 
 func TestConstMat(t *testing.T) {
+	fmt.Println("Testing constant matrix")
 	one := NewConstantMat(2, 5, 1.0)
-	fmt.Println("All ones, 2x5")
-	fmt.Println(mat.Formatted(one, mat.Squeeze()))
-	one.T()
-	fmt.Println("All ones, 5x2")
-	fmt.Println(mat.Formatted(one, mat.Squeeze()))
+	check(t, one.At(2, 3)-1)
+	//fmt.Println(one.Dims())
+	r, c := one.Dims()
+	check(t, float64(r-2))
+	check(t, float64(c-5))
+	tone := one.T()
+	check(t, one.At(2, 3)-1)
+	// No boundary checks are performed ...
+	check(t, one.At(20, 30)-1)
+
+	// Checking that previous transpose was NOT applied applied to the receiver matrix.
+	r, c = one.Dims()
+	//fmt.Println(one.Dims())
+	check(t, float64(r-2))
+	check(t, float64(c-5))
+
+	// Checking that transpose RESULT is transposed.
+	r, c = tone.Dims()
+	//fmt.Println(one.Dims())
+	check(t, float64(r-5))
+	check(t, float64(c-2))
+
 }
