@@ -15,12 +15,16 @@ type Layer struct {
 }
 
 // NewLayer creates a new Layer with provided input, output entries.
+// Nil activation means identity
 func NewLayer(in, out int, activation Activation) *Layer {
 	lay := new(Layer)
 	lay.nbin, lay.nbout = in, out
 	// The w matrix contains both weights and biais(its last LINE), (in + 1) x (out)
 	lay.w = mat.NewDense(in+1, out, nil)
 	lay.act = activation
+	if activation == nil {
+		lay.act = Identity
+	}
 	return lay
 }
 
@@ -43,22 +47,17 @@ func (lay *Layer) Dump() {
 
 // Forward pass on mini batch x
 // x has a line per record (n), and as many columns as entry nodes (in)
-// returns both the linear combination (z) and (if requested from the flag)
-// the activated value (a)
-func (lay *Layer) Forward(x *mat.Dense, activate bool) (z, a *mat.Dense) {
+// returns the activated value (a)
+func (lay *Layer) Forward(x *mat.Dense) (a *mat.Dense) {
 	// x is (n x in )
 	xx := new(mat.Dense)
 	row, _ := x.Dims()
 	xx.Augment(x, NewConstantMat(row, 1, 1.0)) //  ( n x in+1 )
-	z = new(mat.Dense)
+	z := new(mat.Dense)
 	z.Mul(xx, lay.w) // (n x in + 1 ).(in +1  x out) = (n x out)
-	if !activate {
-		return z, nil // activation was not computed
-	}
-	// Compute activation only if requested.
-	a = new(mat.Dense)
-	a.Apply(func(i, j int, v float64) float64 { return lay.act(v, true) }, z)
-	return z, a
+
+	z.Apply(func(i, j int, v float64) float64 { return lay.act(v, true) }, z)
+	return z
 }
 
 // Backprop applies the backpropagation algorith to calculate the errors vectors
