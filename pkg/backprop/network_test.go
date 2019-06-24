@@ -54,15 +54,17 @@ func TestNetworkNetwork2(t *testing.T) {
 	net.bruteForcePartialDerivative(x, ytrue, 1e-5, 1) // Weight
 	net.bruteForcePartialDerivative(x, ytrue, 1e-5, 2) // Weight
 
+	//t.SkipNow()
+
 	net.gradDump(x, ytrue)
 }
 
 func TestNetworkNetwork3(t *testing.T) {
 
 	fmt.Println("Testing Network3 - grad on multiple(3)  lines")
-	l0 := NewFCLayer(3, 4).SetActivation(ActivationSigmoid)
-	l1 := NewFCLayer(4, 5).SetActivation(ActivationSigmoid)
-	l2 := NewFCLayer(5, 2).SetActivation(ActivationSigmoid)
+	l0 := NewFCLayer(3, 4).SetActivation(ActivationRelu)
+	l1 := NewFCLayer(4, 5).SetActivation(ActivationRelu)
+	l2 := NewFCLayer(5, 2).SetActivation(ActivationRelu)
 	net := NewMLNetwork(l0, l1, l2)
 	net.SetCost(CostMSE)
 	net.RandomizeWeight()
@@ -82,6 +84,8 @@ func TestNetworkNetwork3(t *testing.T) {
 	net.bruteForcePartialDerivative(x, ytrue, 1e-5, 0) // Weight
 	net.bruteForcePartialDerivative(x, ytrue, 1e-5, 1) // Weight
 	net.bruteForcePartialDerivative(x, ytrue, 1e-5, 2) // Weight
+
+	//t.SkipNow()
 
 	net.gradDump(x, ytrue)
 }

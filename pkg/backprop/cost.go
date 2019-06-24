@@ -21,14 +21,13 @@ func (*mseImpl) cost(yest, ytrue *mat.Dense) float64 {
 	delta := new(mat.Dense)
 	delta.Sub(yest, ytrue)
 	r, c := delta.Dims()
-	delta.Scale(1/float64(r), delta)
 	res := 0.
 	for i := 0; i < r; i++ {
 		for j := 0; j < c; j++ {
 			res = res + delta.At(i, j)*delta.At(i, j)
 		}
 	}
-	return res / 2
+	return res / (2 * float64(r))
 }
 func (*mseImpl) grad(yest, ytrue *mat.Dense) *mat.Dense {
 	delta := new(mat.Dense)
