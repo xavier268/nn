@@ -19,7 +19,7 @@ type mseImpl struct{}
 
 func (*mseImpl) cost(yest, ytrue *mat.Dense) float64 {
 	delta := new(mat.Dense)
-	delta.Sub(ytrue, yest)
+	delta.Sub(yest, ytrue)
 	r, c := delta.Dims()
 	delta.Scale(1/float64(r), delta)
 	res := 0.
@@ -32,7 +32,7 @@ func (*mseImpl) cost(yest, ytrue *mat.Dense) float64 {
 }
 func (*mseImpl) grad(yest, ytrue *mat.Dense) *mat.Dense {
 	delta := new(mat.Dense)
-	delta.Sub(ytrue, yest)
+	delta.Sub(yest, ytrue)
 	r, _ := delta.Dims()
 	delta.Scale(1/float64(r), delta)
 	return delta

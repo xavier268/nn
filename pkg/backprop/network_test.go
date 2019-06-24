@@ -42,19 +42,17 @@ func TestNetworkNetwork2(t *testing.T) {
 	net.SetCost(CostMSE)
 	net.RandomizeWeight()
 
-	x := mat.NewDense(2, 3, []float64{
+	x := mat.NewDense(1, 3, []float64{
 		0, 1, 2,
-		3, 4, 5,
 	})
 	// Assume ground truth is zero
-	ytrue := mat.NewDense(2, 2, []float64{
+	ytrue := mat.NewDense(1, 2, []float64{
 		2, 4,
-		6, 8,
 	})
 
 	net.bruteForcePartialDerivative(x, ytrue, 1e-5, 0) // Weight
 	net.bruteForcePartialDerivative(x, ytrue, 1e-5, 1) // Weight
 	net.bruteForcePartialDerivative(x, ytrue, 1e-5, 2) // Weight
 
-	net.grad(x, ytrue)
+	net.gradDump(x, ytrue)
 }

@@ -108,9 +108,9 @@ func (net *Network) bruteForcePartialDerivative(x, ytrue *mat.Dense, epsilon flo
 	return g
 }
 
-// grad displays the gradients for all layers using back prop
+// gradDump displays the gradients for all layers using back prop
 // TODO - RESULTS ARE NOT THE SAME - THERE IS AN ERROR ?!
-func (net *Network) grad(x, ytrue *mat.Dense) {
+func (net *Network) gradDump(x, ytrue *mat.Dense) {
 
 	var a []*mat.Dense
 	y := x
@@ -129,7 +129,7 @@ func (net *Network) grad(x, ytrue *mat.Dense) {
 		delta = deltaIn
 		fmt.Println("Backprop Grad ", i, "\n", mat.Formatted(grad, mat.Squeeze()))
 		fmt.Println("BruteForce Grad ", i, "\n",
-			mat.Formatted(net.bruteForcePartialDerivative(x, ytrue, 1e-3, i), mat.Squeeze()))
+			mat.Formatted(net.bruteForcePartialDerivative(x, ytrue, 1e-6, i), mat.Squeeze()))
 	}
 
 }
