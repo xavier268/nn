@@ -130,6 +130,11 @@ func (net *Network) gradDump(x, ytrue *mat.Dense) {
 		fmt.Println("Backprop Grad ", i, "\n", mat.Formatted(grad, mat.Squeeze()))
 		fmt.Println("BruteForce Grad ", i, "\n",
 			mat.Formatted(net.bruteForcePartialDerivative(x, ytrue, 1e-6, i), mat.Squeeze()))
+
+		grad.Sub(grad, net.bruteForcePartialDerivative(x, ytrue, 1e-6, i))
+		fmt.Println("Difference in Grad ", i, "\n",
+			mat.Formatted(grad, mat.Squeeze()))
+
 	}
 
 }
