@@ -23,7 +23,7 @@ func NewLayer(in, out int, activation Activation) *Layer {
 	lay.w = mat.NewDense(in+1, out, nil)
 	lay.act = activation
 	if activation == nil {
-		lay.act = Identity
+		lay.act = ActivationIdentity
 	}
 	return lay
 }
@@ -40,7 +40,8 @@ func (lay *Layer) Biais() mat.Matrix {
 
 // Dump will printout the layer in a readable format.
 func (lay *Layer) Dump() {
-	fmt.Printf("Layer dump : from %d nodes => %d nodes\n", lay.nbin, lay.nbout)
+	fmt.Printf("Layer dump : %d nodes => %d nodes\n", lay.nbin, lay.nbout)
+	fmt.Printf("Activation : %s\n", lay.act.name())
 	fmt.Printf("Weight :\n%v\n", mat.Formatted(lay.Weights()))
 	fmt.Printf("Bias :\n%v\n", mat.Formatted(lay.Biais()))
 }
@@ -56,7 +57,7 @@ func (lay *Layer) Forward(x *mat.Dense) (a *mat.Dense) {
 	z := new(mat.Dense)
 	z.Mul(xx, lay.w) // (n x in + 1 ).(in +1  x out) = (n x out)
 
-	z.Apply(func(i, j int, v float64) float64 { return lay.act(v, true) }, z)
+	z.Apply(func(i, j int, v float64) float64 { return lay.act.f(v) }, z)
 	return z
 }
 
@@ -83,7 +84,7 @@ func (lay *Layer) Backprop(x *mat.Dense, deltaOut *mat.Dense) (deltaIn *mat.Dens
 	res := mat.NewDense(row, lay.nbout, nil)
 	res.Apply(
 		func(i, j int, v float64) float64 {
-			return v * lay.act(z.At(i, j), false)
+			return v * lay.act.df(z.At(i, j))
 		}, deltaOut.Slice(0, row, 0, lay.nbout))
 
 	deltaIn = mat.NewDense(row, lay.nbin+1, nil) // row x in+1

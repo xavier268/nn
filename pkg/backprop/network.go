@@ -50,7 +50,7 @@ func (net *Network) Dump() {
 	fmt.Printf("Dumping Network. \nSize : %d x %d \nNb of layers : %d\n",
 		in, out, len(net.layers))
 	for i, l := range net.layers {
-		fmt.Printf("Layer N° %d/%d - ", i, len(net.layers))
+		fmt.Printf("Layer N° %d/%d\n", i, len(net.layers))
 		l.Dump()
 	}
 }

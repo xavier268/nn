@@ -17,17 +17,18 @@ func TestRelu(test *testing.T) {
 	}
 
 	for _, t := range table {
-		check(test, Relu(t[0], true)-t[1])
-		check(test, Relu(t[0], false)-t[2])
+		check(test, ActivationRelu.f(t[0])-t[1])
+		check(test, ActivationRelu.df(t[0])-t[2])
 	}
 }
 
 func TestSigmoid(t *testing.T) {
 	fmt.Println("Testing Sigmoid")
-	check(t, Sigmoid(0, true)-(1/(1+math.Exp(0))))
-	check(t, Sigmoid(0, false)-0.25)
-	check(t, Sigmoid(3, true)-(1/(1+math.Exp(-3))))
-	check(t, Sigmoid(12.56, false)-Sigmoid(-12.56, false))
-	check(t, Sigmoid(200, true)-1)
-	check(t, Sigmoid(-200, true))
+	check(t, ActivationSigmoid.f(0)-(1/(1+math.Exp(0))))
+	check(t, ActivationSigmoid.df(0)-0.25)
+	check(t, ActivationSigmoid.f(3)-(1/(1+math.Exp(-3))))
+	check(t, ActivationSigmoid.df(12.56)-ActivationSigmoid.df(-12.56))
+	check(t, ActivationSigmoid.f(200)-1)
+	check(t, ActivationSigmoid.f(-200))
+
 }

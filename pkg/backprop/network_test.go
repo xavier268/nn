@@ -1,13 +1,19 @@
 package backprop
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestNewNetwork1(t *testing.T) {
-
-	l1 := NewLayer(3, 4, Sigmoid)
-	l2 := NewLayer(4, 5, Relu)
-	l3 := NewLayer(5, 2, Identity)
+	fmt.Println("Testing Network1")
+	l1 := NewLayer(3, 4, ActivationSigmoid)
+	l2 := NewLayer(4, 5, ActivationRelu)
+	l3 := NewLayer(5, 2, ActivationIdentity)
 	net := NewMLNetwork(l1, l2, l3)
 	net.SetCost(MSE)
-	net.RandomizeWeight().Dump()
+	net.RandomizeWeight()
+
+	t.SkipNow()
+	net.Dump()
 }
