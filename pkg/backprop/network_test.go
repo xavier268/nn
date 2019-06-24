@@ -62,9 +62,9 @@ func TestNetworkNetwork2(t *testing.T) {
 func TestNetworkNetwork3(t *testing.T) {
 
 	fmt.Println("Testing Network3 - grad on multiple(3)  lines")
-	l0 := NewFCLayer(3, 4).SetActivation(ActivationRelu)
-	l1 := NewFCLayer(4, 5).SetActivation(ActivationRelu)
-	l2 := NewFCLayer(5, 2).SetActivation(ActivationRelu)
+	l0 := NewFCLayer(3, 4).SetActivation(ActivationSigmoid)
+	l1 := NewFCLayer(4, 5).SetActivation(ActivationSigmoid)
+	l2 := NewFCLayer(5, 2).SetActivation(ActivationSigmoid)
 	net := NewMLNetwork(l0, l1, l2)
 	net.SetCost(CostMSE)
 	net.RandomizeWeight()
