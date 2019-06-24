@@ -10,6 +10,7 @@ import (
 const epsilon = 1e-20
 
 func init() {
+	fmt.Println("Setting test random seed to 42")
 	rand.Seed(42)
 }
 
