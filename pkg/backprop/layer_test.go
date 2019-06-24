@@ -11,7 +11,7 @@ import (
 func TestLayer1(t *testing.T) {
 
 	fmt.Println("Testing layer")
-	lay := NewLayer(5, 3, ActivationSigmoid)
+	lay := NewFCLayer(5, 3).SetActivation(ActivationSigmoid)
 	lay.RandomizeWeight()
 
 	x := mat.NewDense(10, 5, nil)

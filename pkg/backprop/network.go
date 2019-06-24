@@ -24,7 +24,7 @@ func NewMLNetwork(layers ...*Layer) *Network {
 	}
 	net := new(Network)
 	net.layers = layers
-	net.cost = MSE
+	net.cost = CostMSE
 	return net
 }
 
@@ -32,7 +32,7 @@ func NewMLNetwork(layers ...*Layer) *Network {
 func (net *Network) SetCost(cost Cost) *Network {
 	net.cost = cost
 	if net.cost == nil {
-		net.cost = MSE
+		net.cost = CostMSE
 	}
 	return net
 }
@@ -47,20 +47,21 @@ func (net *Network) Dims() (in, out int) {
 // Dump the network
 func (net *Network) Dump() {
 	in, out := net.Dims()
-	fmt.Printf("Dumping Network. \nSize : %d x %d \nNb of layers : %d\n",
-		in, out, len(net.layers))
+	fmt.Printf("Dumping Network. \nSize : %d x %d \nCost function: %s\nNb of layers : %d\n",
+		in, out, net.cost.name(), len(net.layers))
 	for i, l := range net.layers {
 		fmt.Printf("Layer N° %d/%d\n", i, len(net.layers))
 		l.Dump()
 	}
 }
 
-// Forward computes an estimate
-func (net *Network) Forward(x *mat.Dense) *mat.Dense {
+// Predict computes an estimate, using forward through the layers
+func (net *Network) Predict(x *mat.Dense) *mat.Dense {
 	y := new(mat.Dense)
 	xx := x
 	for _, l := range net.layers {
 		y = l.Forward(xx)
+		xx = y
 	}
 	return y
 }
@@ -71,4 +72,64 @@ func (net *Network) RandomizeWeight() *Network {
 		l.RandomizeWeight()
 	}
 	return net
+}
+
+// Cost estimate yest vs ground truth ytrue
+func (net *Network) Cost(yest, ytrue *mat.Dense) float64 {
+	return net.cost.cost(yest, ytrue)
+}
+
+// bruteForcePartialDerivative gets the brute force derivative
+// for cost of input x and ground truth ytrue
+// w.r.t. the weight+biais matrix of the l-th layer
+// No check on l  - will panic if out of range
+// Use for TESTING only, very slow
+// This is NOT THREAD SAFE as it MODIFIES NETWORK, then put it back on exit
+func (net *Network) bruteForcePartialDerivative(x, ytrue *mat.Dense, epsilon float64, l int) *mat.Dense {
+
+	r, c := net.layers[l].w.Dims()
+	g := mat.NewDense(r, c, nil)
+
+	for i := 0; i < r; i++ {
+		for j := 0; j < c; j++ {
+			// Initial cost
+			c1 := net.Cost(net.Predict(x), ytrue)
+			// Now, we slightly change the weight
+			v := net.layers[l].w.At(i, j)
+			net.layers[l].w.Set(i, j, v+epsilon)
+			// Compute modified cost
+			c2 := net.Cost(net.Predict(x), ytrue)
+			// Restore weight back to former value
+			net.layers[l].w.Set(i, j, v)
+			// Store partial derivative
+			g.Set(i, j, (c2-c1)/epsilon)
+		}
+	}
+	return g
+}
+
+// grad displays the gradients for all layers using back prop
+// TODO - RESULTS ARE NOT THE SAME - THERE IS AN ERROR ?!
+func (net *Network) grad(x, ytrue *mat.Dense) {
+
+	var a []*mat.Dense
+	y := x
+	a = append(a, y)
+	// We store successif activation vectors in a, starting with input
+	for _, ll := range net.layers {
+		y = ll.Forward(y)
+		a = append(a, y)
+	}
+	yest := y
+	// Compute initial delta
+	delta := net.cost.grad(yest, ytrue)
+	// Apply backprop backwards
+	for i := len(net.layers) - 1; i >= 0; i-- {
+		deltaIn, grad := net.layers[i].Backprop(a[i], delta)
+		delta = deltaIn
+		fmt.Println("Backprop Grad ", i, "\n", mat.Formatted(grad, mat.Squeeze()))
+		fmt.Println("BruteForce Grad ", i, "\n",
+			mat.Formatted(net.bruteForcePartialDerivative(x, ytrue, 1e-3, i), mat.Squeeze()))
+	}
+
 }

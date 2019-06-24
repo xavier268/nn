@@ -2,29 +2,39 @@ package backprop
 
 import "gonum.org/v1/gonum/mat"
 
-// Cost is a cost function, providing either direct result or gradient
+// Cost is the interface for a cost function,
+// providing both direct result and gradient
 // It takes as input  estimated results (yest) and ground truth (ytruth).
 // The gradient has the exact same dimension as the yest matrix.
-type Cost func(yest, ytrue *mat.Dense, direct bool) (cost float64, grad *mat.Dense)
+type Cost interface {
+	cost(yest, ytrue *mat.Dense) float64
+	grad(yest, ytrue *mat.Dense) *mat.Dense
+	name() string
+}
 
-// MSE Mean Square Error ( 1/2n * sum of squares errors )
-func MSE(yest, ytrue *mat.Dense, direct bool) (cost float64, grad *mat.Dense) {
+// CostMSE defines a cost function using Mean Squered Error
+var CostMSE = new(mseImpl)
 
+type mseImpl struct{}
+
+func (*mseImpl) cost(yest, ytrue *mat.Dense) float64 {
 	delta := new(mat.Dense)
 	delta.Sub(ytrue, yest)
 	r, c := delta.Dims()
 	delta.Scale(1/float64(r), delta)
-
-	if direct {
-		// Direct evaluation
-		res := 0.
-		for i := 0; i < r; i++ {
-			for j := 0; j < c; j++ {
-				res = res + delta.At(i, j)*delta.At(i, j)
-			}
+	res := 0.
+	for i := 0; i < r; i++ {
+		for j := 0; j < c; j++ {
+			res = res + delta.At(i, j)*delta.At(i, j)
 		}
-		return res / 2, nil
 	}
-	// Return gradient
-	return -1, delta
+	return res / 2
 }
+func (*mseImpl) grad(yest, ytrue *mat.Dense) *mat.Dense {
+	delta := new(mat.Dense)
+	delta.Sub(ytrue, yest)
+	r, _ := delta.Dims()
+	delta.Scale(1/float64(r), delta)
+	return delta
+}
+func (*mseImpl) name() string { return "MSE (Mean Squared Error) cost function" }

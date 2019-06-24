@@ -14,16 +14,21 @@ type Layer struct {
 	act         Activation
 }
 
-// NewLayer creates a new Layer with provided input, output entries.
-// Nil activation means identity
-func NewLayer(in, out int, activation Activation) *Layer {
+// NewFCLayer creates a new Fully Connected Layer with provided input, output entries.
+// Default activation is identity
+func NewFCLayer(in, out int) *Layer {
 	lay := new(Layer)
 	lay.nbin, lay.nbout = in, out
 	// The w matrix contains both weights and biais(its last LINE), (in + 1) x (out)
 	lay.w = mat.NewDense(in+1, out, nil)
-	lay.act = activation
-	if activation == nil {
-		lay.act = ActivationIdentity
+	lay.act = ActivationIdentity
+	return lay
+}
+
+// SetActivation to the requested activation mode
+func (lay *Layer) SetActivation(activation Activation) *Layer {
+	if activation != nil {
+		lay.act = activation
 	}
 	return lay
 }
@@ -49,10 +54,12 @@ func (lay *Layer) Dump() {
 // Forward pass on mini batch x
 // x has a line per record (n), and as many columns as entry nodes (in)
 // returns the activated value (a)
+// x is NOT modified
 func (lay *Layer) Forward(x *mat.Dense) (a *mat.Dense) {
 	// x is (n x in )
-	xx := new(mat.Dense)
 	row, _ := x.Dims()
+
+	xx := new(mat.Dense)
 	xx.Augment(x, NewConstantMat(row, 1, 1.0)) //  ( n x in+1 )
 	z := new(mat.Dense)
 	z.Mul(xx, lay.w) // (n x in + 1 ).(in +1  x out) = (n x out)
