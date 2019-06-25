@@ -10,6 +10,8 @@ import (
 type Network struct {
 	layers []*Layer
 	cost   Cost
+	lr     float64 // Learning rate >0
+	l2     float64 // l2 regularization ratio 0 : none, otherwise >0
 }
 
 // NewMLNetwork creates a multilayer network
@@ -25,6 +27,8 @@ func NewMLNetwork(layers ...*Layer) *Network {
 	net := new(Network)
 	net.layers = layers
 	net.cost = CostMSE
+	net.lr = 1e-10
+	net.l2 = 0
 	return net
 }
 
@@ -66,10 +70,10 @@ func (net *Network) Predict(x *mat.Dense) *mat.Dense {
 	return y
 }
 
-// RandomizeWeight generates random weights
-func (net *Network) RandomizeWeight() *Network {
+// InitWB generates random weights according to provided initialization method
+func (net *Network) InitWB(initialization Initialization) *Network {
 	for _, l := range net.layers {
-		l.InitWB(InitializationRandom)
+		l.InitWB(initialization)
 	}
 	return net
 }

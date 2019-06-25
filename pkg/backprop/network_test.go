@@ -14,7 +14,7 @@ func TestNewNetwork1(t *testing.T) {
 	l2 := NewFCLayer(5, 2).SetActivation(ActivationSigmoid)
 	net := NewMLNetwork(l0, l1, l2)
 	net.SetCost(CostMSE)
-	net.RandomizeWeight()
+	net.InitWB(InitializationRandom)
 
 	x := mat.NewDense(2, 3, []float64{
 		0, 1, 2,
@@ -34,13 +34,13 @@ func TestNewNetwork1(t *testing.T) {
 
 func TestNetworkNetwork2(t *testing.T) {
 
-	fmt.Println("Testing Network2 - grad on 1 line")
+	fmt.Println("Testing Network2 - grad on single line")
 	l0 := NewFCLayer(3, 4).SetActivation(ActivationSigmoid)
-	l1 := NewFCLayer(4, 5).SetActivation(ActivationSigmoid)
-	l2 := NewFCLayer(5, 2).SetActivation(ActivationSigmoid)
+	l1 := NewFCLayer(4, 5).SetActivation(ActivationIdentity)
+	l2 := NewFCLayer(5, 2).SetActivation(ActivationRelu)
 	net := NewMLNetwork(l0, l1, l2)
 	net.SetCost(CostMSE)
-	net.RandomizeWeight()
+	net.InitWB(InitializationRandom)
 
 	x := mat.NewDense(1, 3, []float64{
 		0, 1, 2,
@@ -50,24 +50,42 @@ func TestNetworkNetwork2(t *testing.T) {
 		2, 4,
 	})
 
-	net.bruteForcePartialDerivative(x, ytrue, 1e-5, 0) // Weight
-	net.bruteForcePartialDerivative(x, ytrue, 1e-5, 1) // Weight
-	net.bruteForcePartialDerivative(x, ytrue, 1e-5, 2) // Weight
-
-	//t.SkipNow()
-
 	net.gradDump(t, x, ytrue)
 }
 
-func TestNetworkNetwork3(t *testing.T) {
+func TestNetworkNetwork3Sigmoid(t *testing.T) {
 
-	fmt.Println("Testing Network3 - grad on multiple(3)  lines")
+	fmt.Println("Testing Network Sigmoid - grad on multiple(3)  lines")
 	l0 := NewFCLayer(3, 4).SetActivation(ActivationSigmoid)
 	l1 := NewFCLayer(4, 5).SetActivation(ActivationSigmoid)
 	l2 := NewFCLayer(5, 2).SetActivation(ActivationSigmoid)
 	net := NewMLNetwork(l0, l1, l2)
 	net.SetCost(CostMSE)
-	net.RandomizeWeight()
+	net.InitWB(InitializationRandom)
+
+	x := mat.NewDense(3, 3, []float64{
+		0, 1, 2,
+		3, 4, 5,
+		6, 7, 8,
+	})
+	// Assume ground truth is zero
+	ytrue := mat.NewDense(3, 2, []float64{
+		2, 4,
+		7, 8,
+		5, 5,
+	})
+
+	net.gradDump(t, x, ytrue)
+}
+func TestNetworkNetwork3Relu(t *testing.T) {
+
+	fmt.Println("Testing Network Relu - grad on multiple(3)  lines")
+	l0 := NewFCLayer(3, 4).SetActivation(ActivationRelu)
+	l1 := NewFCLayer(4, 5).SetActivation(ActivationRelu)
+	l2 := NewFCLayer(5, 2).SetActivation(ActivationRelu)
+	net := NewMLNetwork(l0, l1, l2)
+	net.SetCost(CostMSE)
+	net.InitWB(InitializationRandom)
 
 	x := mat.NewDense(3, 3, []float64{
 		0, 1, 2,
