@@ -83,11 +83,11 @@ func (net *Network) Cost(yest, ytrue *mat.Dense) float64 {
 // applying learning rate for 'steps'  steps
 // Return the resulting achieved cost
 func (net *Network) Train(x, ytrue *mat.Dense, learning float64, steps int) float64 {
-f := 0.
-for int i:= 0; i<steps; i++ {
-	f = train1()
-}
-return f
+	f := 0.
+	for i := 0; i < steps; i++ {
+		f = net.train1(x, ytrue, learning)
+	}
+	return f
 }
 
 // train1 learns from a minibatch,
