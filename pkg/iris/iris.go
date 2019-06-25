@@ -1,18 +1,14 @@
-package main
+package iris
 
 import (
 	"bufio"
 	"encoding/csv"
-	"fmt"
 	"io"
 	"os"
 	"strconv"
-)
 
-func main() {
-	fmt.Println(readIrisFile())
-	fmt.Println(IrisClassNames)
-}
+	"gonum.org/v1/gonum/mat"
+)
 
 //Iris defines a record of iris data, with class info
 type Iris struct {
@@ -64,5 +60,29 @@ func readIrisFile() []Iris {
 		iris = append(iris, i)
 	}
 	return iris
+}
 
+// GetIrisXY reads iris data in the X Y matrix format
+func GetIrisXY() (X *mat.Dense, Y *mat.Dense) {
+	iris := readIrisFile()
+	r := len(iris)
+	X = mat.NewDense(r, 4, nil)
+	Y = mat.NewDense(r, 1, nil)
+	X.Apply(func(i, j int, _ float64) float64 {
+		switch j {
+		case 0:
+			return iris[i].sl
+		case 1:
+			return iris[i].sw
+		case 2:
+			return iris[i].pl
+		case 3:
+			return iris[i].pw
+		}
+		return 0.
+	}, X)
+	Y.Apply(func(i, _ int, _ float64) float64 {
+		return float64(IrisClassNames[iris[i].cl])
+	}, Y)
+	return X, Y
 }
