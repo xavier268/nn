@@ -56,7 +56,7 @@ func TestNetworkNetwork2(t *testing.T) {
 
 	//t.SkipNow()
 
-	net.gradDump(x, ytrue)
+	net.gradDump(t, x, ytrue)
 }
 
 func TestNetworkNetwork3(t *testing.T) {
@@ -81,11 +81,36 @@ func TestNetworkNetwork3(t *testing.T) {
 		5, 5,
 	})
 
-	net.bruteForcePartialDerivative(x, ytrue, 1e-5, 0) // Weight
-	net.bruteForcePartialDerivative(x, ytrue, 1e-5, 1) // Weight
-	net.bruteForcePartialDerivative(x, ytrue, 1e-5, 2) // Weight
+	net.gradDump(t, x, ytrue)
+}
 
-	//t.SkipNow()
+// Utilities
 
-	net.gradDump(x, ytrue)
+// gradDump displays the gradients for all layers using back prop
+// Used  for testing/debugging ...
+func (net *Network) gradDump(t *testing.T, x, ytrue *mat.Dense) {
+
+	var a []*mat.Dense
+	y := x
+	a = append(a, y)
+	// We store successif activation vectors in a, starting with input
+	for _, ll := range net.layers {
+		y = ll.Forward(y)
+		a = append(a, y)
+	}
+	yest := y
+	// Compute initial delta
+	delta := net.cost.grad(yest, ytrue)
+	// Apply backprop backwards
+	for i := len(net.layers) - 1; i >= 0; i-- {
+		// Compute backprop gradient
+		deltaIn, grad := net.layers[i].Backprop(a[i], delta)
+		delta = deltaIn
+		// compute brute force gradient, with epsilon = 1e-6
+		gradbf := net.bruteForcePartialDerivative(x, ytrue, 1e-6, i)
+		// display Mean Squared Error between both gradients.
+		mse := CostMSE.cost(grad, gradbf)
+		fmt.Printf("Comparing backprop gradient with brute force gradient for layer %d, MSE = %e \n", i, mse)
+		check(t, mse)
+	}
 }

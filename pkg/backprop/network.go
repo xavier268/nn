@@ -107,32 +107,3 @@ func (net *Network) bruteForcePartialDerivative(x, ytrue *mat.Dense, epsilon flo
 	}
 	return g
 }
-
-// gradDump displays the gradients for all layers using back prop
-// Used  for testing/debugging ...
-func (net *Network) gradDump(x, ytrue *mat.Dense) {
-
-	var a []*mat.Dense
-	y := x
-	a = append(a, y)
-	// We store successif activation vectors in a, starting with input
-	for _, ll := range net.layers {
-		y = ll.Forward(y)
-		a = append(a, y)
-	}
-	yest := y
-	// Compute initial delta
-	delta := net.cost.grad(yest, ytrue)
-	// Apply backprop backwards
-	for i := len(net.layers) - 1; i >= 0; i-- {
-		// Compute backprop gradient
-		deltaIn, grad := net.layers[i].Backprop(a[i], delta)
-		delta = deltaIn
-		// compute brute force gradient, with epsilon = 1e-6
-		gradbf := net.bruteForcePartialDerivative(x, ytrue, 1e-6, i)
-		// display Mean Squared Error between both gradients.
-		fmt.Printf("Comparing backprop gradient with brute force gradient for layer %d, MSE = %e \n", i, CostMSE.cost(grad, gradbf))
-
-	}
-
-}

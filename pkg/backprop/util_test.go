@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-const epsilon = 1e-20
+const epsilon = 1e-10
 
 func init() {
 	fmt.Println("Setting test random seed to 42")
