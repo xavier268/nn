@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/xavier268/gonum-demo/pkg/iris"
 	"gonum.org/v1/gonum/mat"
 )
 
@@ -100,6 +101,18 @@ func TestNetworkNetwork3Relu(t *testing.T) {
 	})
 
 	net.gradDump(t, x, ytrue)
+}
+
+func TestTrainIris(t *testing.T) {
+	fmt.Println("Testing trainig on iris dataset")
+	x, y := iris.GetIrisXY()
+
+	NewMLNetwork(
+		NewFCLayer(4, 5),
+		NewFCLayer(5, 3)).
+		SetCost(CostMSE).
+		InitWB(InitializationRandom).
+		Train(x, y, 1e-2, 1000)
 }
 
 // ******************************************************

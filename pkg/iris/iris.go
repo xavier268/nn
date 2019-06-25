@@ -67,7 +67,7 @@ func GetIrisXY() (X *mat.Dense, Y *mat.Dense) {
 	iris := readIrisFile()
 	r := len(iris)
 	X = mat.NewDense(r, 4, nil)
-	Y = mat.NewDense(r, 1, nil)
+	Y = mat.NewDense(r, len(IrisClassNames), nil)
 	X.Apply(func(i, j int, _ float64) float64 {
 		switch j {
 		case 0:
@@ -81,8 +81,11 @@ func GetIrisXY() (X *mat.Dense, Y *mat.Dense) {
 		}
 		return 0.
 	}, X)
-	Y.Apply(func(i, _ int, _ float64) float64 {
-		return float64(IrisClassNames[iris[i].cl])
+	Y.Apply(func(i, j int, _ float64) float64 {
+		if IrisClassNames[iris[i].cl] == j {
+			return 1.
+		} 
+		return 0.
 	}, Y)
 	return X, Y
 }
