@@ -107,12 +107,17 @@ func TestTrainIris(t *testing.T) {
 	fmt.Println("Testing trainig on iris dataset")
 	x, y := iris.GetIrisXY()
 
-	NewMLNetwork(
-		NewFCLayer(4, 5),
-		NewFCLayer(5, 3)).
+	net := NewMLNetwork(
+		NewFCLayer(4, 7),
+		NewFCLayer(7, 3)).
 		SetCost(CostMSE).
-		InitWB(InitializationRandom).
-		Train(x, y, 1e-2, 1000)
+		InitWB(InitializationRandom)
+
+	net.Train(x, y, 0.001, 10000)
+	net.Dump()
+	cmp := new(mat.Dense)
+	cmp.Augment(net.Predict(x), y)
+	fmt.Println(mat.Formatted(cmp, mat.Squeeze(), mat.Excerpt(15)))
 }
 
 // ******************************************************
