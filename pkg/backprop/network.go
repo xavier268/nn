@@ -10,8 +10,6 @@ import (
 type Network struct {
 	layers []*Layer
 	cost   Cost
-	lr     float64 // Learning rate >0
-	l2     float64 // l2 regularization ratio 0 : none, otherwise >0
 }
 
 // NewMLNetwork creates a multilayer network
@@ -27,8 +25,6 @@ func NewMLNetwork(layers ...*Layer) *Network {
 	net := new(Network)
 	net.layers = layers
 	net.cost = CostMSE
-	net.lr = 1e-10
-	net.l2 = 0
 	return net
 }
 
@@ -81,4 +77,45 @@ func (net *Network) InitWB(initialization Initialization) *Network {
 // Cost estimate yest vs ground truth ytrue
 func (net *Network) Cost(yest, ytrue *mat.Dense) float64 {
 	return net.cost.cost(yest, ytrue)
+}
+
+// Train learns from a minibatch,
+// applying learning rate for 'steps'  steps
+// Return the resulting achieved cost
+func (net *Network) Train(x, ytrue *mat.Dense, learning float64, steps int) float64 {
+f := 0.
+for int i:= 0; i<steps; i++ {
+	f = train1()
+}
+return f
+}
+
+// train1 learns from a minibatch,
+// applying learning rate for ONE steps
+// Return the resulting achieved cost
+func (net *Network) train1(x, ytrue *mat.Dense, learning float64) float64 {
+
+	// We store successif activation vectors in a, starting with input
+	var a []*mat.Dense // activation(s) for each layers
+	y := x
+	a = append(a, y)
+	for _, ll := range net.layers {
+		y = ll.Forward(y)
+		a = append(a, y)
+	}
+	yest := y // Last activation obtained
+
+	// Compute initial delta
+	delta := net.cost.grad(yest, ytrue)
+	// Apply backprop backwards
+	for i := len(net.layers) - 1; i >= 0; i-- {
+		// Compute backprop gradient
+		deltaIn, grad := net.layers[i].Backprop(a[i], delta)
+		delta = deltaIn
+
+		// Adjust weigts with learning rate
+		grad.Scale(learning, grad)
+		net.layers[i].w.Sub(net.layers[i].w, grad)
+	}
+	return net.Cost(yest, ytrue)
 }
