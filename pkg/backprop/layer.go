@@ -2,7 +2,6 @@ package backprop
 
 import (
 	"fmt"
-	"math/rand"
 
 	"gonum.org/v1/gonum/mat"
 )
@@ -104,10 +103,7 @@ func (lay *Layer) Backprop(x *mat.Dense, deltaOut *mat.Dense) (deltaIn *mat.Dens
 	return deltaIn, wgrad // (nxin+1), (in+1 x out)
 }
 
-// RandomizeWeight generates random weights
-func (lay *Layer) RandomizeWeight() {
-	lay.w.Apply(
-		func(_ int, _ int, _ float64) float64 {
-			return 2*rand.Float64() - 1
-		}, lay.w)
+// InitWB generates random weights and biaises
+func (lay *Layer) InitWB(initialization Initialization) {
+	initialization(lay)
 }
