@@ -84,10 +84,12 @@ func TestNetworkNetwork3(t *testing.T) {
 	net.gradDump(t, x, ytrue)
 }
 
-// Utilities
+// ******************************************************
+//         Network specific testing utilities
+// ******************************************************
 
-// gradDump displays the gradients for all layers using back prop
-// Used  for testing/debugging ...
+// gradDump checks the gradients for all layers using back prop
+// comparing with brute force gradient
 func (net *Network) gradDump(t *testing.T, x, ytrue *mat.Dense) {
 
 	var a []*mat.Dense
@@ -113,4 +115,33 @@ func (net *Network) gradDump(t *testing.T, x, ytrue *mat.Dense) {
 		fmt.Printf("Comparing backprop gradient with brute force gradient for layer %d, MSE = %e \n", i, mse)
 		check(t, mse)
 	}
+}
+
+// bruteForcePartialDerivative gets the brute force derivative
+// for cost of input x and ground truth ytrue
+// w.r.t. the weight+biais matrix of the l-th layer
+// No check on l  - will panic if out of range
+// Use for TESTING only, very slow
+// This is NOT THREAD SAFE as it MODIFIES NETWORK, then put it back on exit
+func (net *Network) bruteForcePartialDerivative(x, ytrue *mat.Dense, epsilon float64, l int) *mat.Dense {
+
+	r, c := net.layers[l].w.Dims()
+	g := mat.NewDense(r, c, nil)
+
+	for i := 0; i < r; i++ {
+		for j := 0; j < c; j++ {
+			// Initial cost
+			c1 := net.Cost(net.Predict(x), ytrue)
+			// Now, we slightly change the weight
+			v := net.layers[l].w.At(i, j)
+			net.layers[l].w.Set(i, j, v+epsilon)
+			// Compute modified cost
+			c2 := net.Cost(net.Predict(x), ytrue)
+			// Restore weight back to former value
+			net.layers[l].w.Set(i, j, v)
+			// Store partial derivative
+			g.Set(i, j, (c2-c1)/epsilon)
+		}
+	}
+	return g
 }
