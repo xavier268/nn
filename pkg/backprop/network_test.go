@@ -104,8 +104,25 @@ func TestNetworkNetwork3Relu(t *testing.T) {
 }
 
 func TestTrainIris(t *testing.T) {
-	fmt.Println("Testing trainig on iris dataset")
+	fmt.Println("Testing training on iris dataset")
+	display := false
+
 	x, y := iris.GetIrisXY()
+	Shuffle(x, y)
+	if display {
+		fmt.Println("x\n", mat.Formatted(x, mat.Squeeze(), mat.Excerpt(3)))
+		fmt.Println("y\n", mat.Formatted(y, mat.Squeeze(), mat.Excerpt(3)))
+
+	}
+	xtrain, xvalidate := SplitTrainTest(x, 0.2)
+	ytrain, yvalidate := SplitTrainTest(y, 0.2)
+
+	if display {
+		fmt.Println("xtrain\n", mat.Formatted(xtrain, mat.Squeeze(), mat.Excerpt(3)))
+		fmt.Println("ytrain\n", mat.Formatted(ytrain, mat.Squeeze(), mat.Excerpt(3)))
+		fmt.Println("xvalidate\n", mat.Formatted(xvalidate, mat.Squeeze(), mat.Excerpt(3)))
+		fmt.Println("yvalidate\n", mat.Formatted(yvalidate, mat.Squeeze(), mat.Excerpt(3)))
+	}
 
 	net := NewMLNetwork(
 		NewFCLayer(4, 7),
@@ -113,11 +130,19 @@ func TestTrainIris(t *testing.T) {
 		SetCost(CostMSE).
 		InitWB(InitializationRandom)
 
-	net.Train(x, y, 0.001, 10000)
-	net.Dump()
-	cmp := new(mat.Dense)
-	cmp.Augment(net.Predict(x), y)
-	fmt.Println(mat.Formatted(cmp, mat.Squeeze(), mat.Excerpt(15)))
+	var c, cc float64
+	for i := 0; i < 30; i++ {
+		c = net.Train(xtrain, ytrain, 0.001, 1000)
+		cc = net.Evaluate(xvalidate, yvalidate)
+		fmt.Printf("%dx%d\t Cost training : %e\t validation: %e\n", i, 100, c, cc)
+	}
+
+	if display {
+		net.Dump()
+		cmp := new(mat.Dense)
+		cmp.Augment(net.Predict(x), y)
+		fmt.Println(mat.Formatted(cmp, mat.Squeeze(), mat.Excerpt(15)))
+	}
 }
 
 // ******************************************************

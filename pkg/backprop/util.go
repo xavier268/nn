@@ -8,7 +8,7 @@ import (
 )
 
 // SplitTrainTest splits the provided matrix in a train and test subset.
-// The test represent 'ratio' of the total number of records.
+// ratio  = nb test records / nb ttl records
 func SplitTrainTest(x *mat.Dense, ratio float64) (train, test *mat.Dense) {
 
 	n, c := x.Dims()                          // Ttl nbr of records
@@ -35,4 +35,20 @@ func Shuffle(xx ...*mat.Dense) {
 			}
 		}
 	})
+}
+
+// MaxCol return the indexes of the maximum columns, for each row
+func MaxCol(x *mat.Dense) []int {
+	r, c := x.Dims()
+	var res []int
+	for i := 0; i < r; i++ {
+		maxv, maxj := x.At(i, 0), 0
+		for j := 1; j < c; j++ {
+			if x.At(i, j) > maxv {
+				maxv, maxj = x.At(i, j), j
+			}
+		}
+		res = append(res, maxj)
+	}
+	return res
 }

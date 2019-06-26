@@ -91,9 +91,6 @@ func (net *Network) Train(x, ytrue *mat.Dense, learning float64, steps int) floa
 	f := 0.
 	for i := 0; i < steps; i++ {
 		f = net.train1(x, ytrue, learning)
-		if i%1000 == 0 {
-			fmt.Printf("%d\tcost : %f\n", i, f)
-		}
 	}
 	return f
 }
