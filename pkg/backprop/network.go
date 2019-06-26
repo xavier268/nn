@@ -79,6 +79,11 @@ func (net *Network) Cost(yest, ytrue *mat.Dense) float64 {
 	return net.cost.cost(yest, ytrue)
 }
 
+// Evaluate the prediction on a validation batch
+func (net *Network) Evaluate(x, ytrue *mat.Dense) float64 {
+	return net.Cost(net.Predict(x), ytrue)
+}
+
 // Train learns from a minibatch,
 // applying learning rate for 'steps'  steps
 // Return the resulting achieved cost
