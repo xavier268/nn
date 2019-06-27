@@ -67,8 +67,8 @@ func TestShuffle(t *testing.T) {
 		fmt.Println("After shuffling")
 		fmt.Println(mat.Formatted(m, mat.Squeeze()))
 	}
-	if m.At(0, 0) == 1 || m.At(1, 0) == 4 || m.At(2, 0) == 7 || m.At(3, 0) == 10 {
-		fmt.Println("Shuffling was incomplete ?!")
+	if m.At(0, 0) == 1 && m.At(1, 0) == 4 && m.At(2, 0) == 7 && m.At(3, 0) == 10 {
+		fmt.Println("Shuffling did not happen ?!")
 		t.FailNow()
 	}
 

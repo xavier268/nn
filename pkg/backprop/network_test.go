@@ -105,7 +105,7 @@ func TestNetworkNetwork3Relu(t *testing.T) {
 
 func TestTrainIris(t *testing.T) {
 	fmt.Println("Testing training on iris dataset")
-	display := false
+	display := true
 
 	x, y := iris.GetIrisXY()
 	Shuffle(x, y)
@@ -141,6 +141,7 @@ func TestTrainIris(t *testing.T) {
 		net.Dump()
 		cmp := new(mat.Dense)
 		cmp.Augment(net.Predict(x), y)
+		fmt.Println("Predicted vs ground truth")
 		fmt.Println(mat.Formatted(cmp, mat.Squeeze(), mat.Excerpt(15)))
 	}
 }

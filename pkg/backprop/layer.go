@@ -46,8 +46,10 @@ func (lay *Layer) Biais() mat.Matrix {
 func (lay *Layer) Dump() {
 	fmt.Printf("Layer dump : %d nodes => %d nodes\n", lay.nbin, lay.nbout)
 	fmt.Printf("Activation : %s\n", lay.act.name())
-	fmt.Printf("Weight :\n%v\n", mat.Formatted(lay.Weights()))
-	fmt.Printf("Bias :\n%v\n", mat.Formatted(lay.Biais()))
+	m, v := lay.WStat()
+	fmt.Printf("Weight/Biais mean: %.2e\t var: %.2e\n", m, v)
+	fmt.Printf("Weight :\n%v\n", mat.Formatted(lay.Weights(), mat.Squeeze(), mat.Excerpt(5)))
+	fmt.Printf("Bias :\n%v\n", mat.Formatted(lay.Biais(), mat.Squeeze(), mat.Excerpt(5)))
 }
 
 // Forward pass on mini batch x
@@ -106,4 +108,14 @@ func (lay *Layer) Backprop(x *mat.Dense, deltaOut *mat.Dense) (deltaIn *mat.Dens
 // InitWB generates random weights and biaises
 func (lay *Layer) InitWB(initialization Initialization) {
 	initialization(lay)
+}
+
+// WStat returns mean and var of the weights
+func (lay *Layer) WStat() (m, v float64) {
+	r, c := lay.w.Dims()
+	x := new(mat.Dense)
+	x.MulElem(lay.w, lay.w)
+	v = mat.Sum(x) / float64(r*c)
+	m = mat.Sum(lay.w) / float64(r*c)
+	return m, v
 }
