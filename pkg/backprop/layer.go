@@ -78,10 +78,8 @@ func (lay *Layer) Forward(x *mat.Dense) (a *mat.Dense) {
 // then deltaIn is the grad of C w.r. to the activations one layer down.
 // wgrad is the gradient of C w.r. to the weight and biais
 //
-//             TO DO : NEEDS REVISION & TEST !!
-//
 func (lay *Layer) Backprop(x *mat.Dense, deltaOut *mat.Dense) (deltaIn *mat.Dense, wgrad *mat.Dense) {
-	// First, we do a partail forward calculation
+	// First, we do a partial forward calculation
 	xx := new(mat.Dense)
 	row, _ := x.Dims()
 	xx.Augment(x, NewConstantMat(row, 1, 1.0)) //  ( n x in+1 )
