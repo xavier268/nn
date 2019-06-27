@@ -14,7 +14,7 @@ const epsilon = 1e-12
 
 func init() {
 	fmt.Println("Setting test random seed to 42")
-	rand.Seed(42)
+	rand.Seed(42 * 3)
 }
 
 // Check for almost null float64 value

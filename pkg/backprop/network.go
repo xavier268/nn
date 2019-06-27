@@ -97,6 +97,7 @@ func (net *Network) Train(x, ytrue *mat.Dense, learning float64, l2regul float64
 
 // train1 learns from a minibatch,
 // applying learning rate and l2 regularization factor for ONE steps
+// l2 <=0 will igore regularization
 // w = w - learning * (grad + l2 * w)
 // Return the resulting achieved cost
 func (net *Network) train1(x, ytrue *mat.Dense, learning, l2 float64) float64 {
@@ -120,9 +121,11 @@ func (net *Network) train1(x, ytrue *mat.Dense, learning, l2 float64) float64 {
 		delta = deltaIn
 
 		// Adjust weigts with learning rate and regul
-		reg := new(mat.Dense)
-		reg.Scale(l2, net.layers[i].w)
-		grad.Add(grad, reg)
+		if l2 > 0 { // Ignore regularization if l2 <= 0
+			reg := new(mat.Dense)
+			reg.Scale(l2, net.layers[i].w)
+			grad.Add(grad, reg)
+		}
 		grad.Scale(learning, grad)
 		net.layers[i].w.Sub(net.layers[i].w, grad)
 	}
