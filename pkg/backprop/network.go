@@ -87,18 +87,19 @@ func (net *Network) Evaluate(x, ytrue *mat.Dense) float64 {
 // Train learns from a minibatch,
 // applying learning rate for 'steps'  steps
 // Return the resulting achieved cost
-func (net *Network) Train(x, ytrue *mat.Dense, learning float64, steps int) float64 {
+func (net *Network) Train(x, ytrue *mat.Dense, learning float64, l2regul float64, steps int) float64 {
 	f := 0.
 	for i := 0; i < steps; i++ {
-		f = net.train1(x, ytrue, learning)
+		f = net.train1(x, ytrue, learning, l2regul)
 	}
 	return f
 }
 
 // train1 learns from a minibatch,
-// applying learning rate for ONE steps
+// applying learning rate and l2 regularization factor for ONE steps
+// w = w - learning * (grad + l2 * w)
 // Return the resulting achieved cost
-func (net *Network) train1(x, ytrue *mat.Dense, learning float64) float64 {
+func (net *Network) train1(x, ytrue *mat.Dense, learning, l2 float64) float64 {
 
 	// We store successif activation vectors in a, starting with input
 	var a []*mat.Dense // activation(s) for each layers
@@ -118,7 +119,10 @@ func (net *Network) train1(x, ytrue *mat.Dense, learning float64) float64 {
 		deltaIn, grad := net.layers[i].Backprop(a[i], delta)
 		delta = deltaIn
 
-		// Adjust weigts with learning rate
+		// Adjust weigts with learning rate and regul
+		reg := new(mat.Dense)
+		reg.Scale(l2, net.layers[i].w)
+		grad.Add(grad, reg)
 		grad.Scale(learning, grad)
 		net.layers[i].w.Sub(net.layers[i].w, grad)
 	}

@@ -125,16 +125,16 @@ func TestTrainIris(t *testing.T) {
 	}
 
 	net := NewMLNetwork(
-		NewFCLayer(4, 7),
-		NewFCLayer(7, 3)).
+		NewFCLayer(4, 35),
+		NewFCLayer(35, 3)).
 		SetCost(CostMSE).
 		InitWB(InitializationRandom)
 
 	var c, cc float64
 	for i := 0; i < 30; i++ {
-		c = net.Train(xtrain, ytrain, 0.001, 1000)
+		c = net.Train(xtrain, ytrain, 0.001, 0.01, 500)
 		cc = net.Evaluate(xvalidate, yvalidate)
-		fmt.Printf("%dx%d\t Cost training : %e\t validation: %e\n", i, 100, c, cc)
+		fmt.Printf("%dx%d\t Cost training : %e\t validation: %e\n", i, 500, c, cc)
 	}
 
 	if display {
