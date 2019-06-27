@@ -51,7 +51,7 @@ func TestNetworkNetwork2(t *testing.T) {
 		2, 4,
 	})
 
-	net.gradDump(t, x, ytrue)
+	net.gradCheck(t, x, ytrue)
 }
 
 func TestNetworkNetwork3Sigmoid(t *testing.T) {
@@ -76,7 +76,7 @@ func TestNetworkNetwork3Sigmoid(t *testing.T) {
 		5, 5,
 	})
 
-	net.gradDump(t, x, ytrue)
+	net.gradCheck(t, x, ytrue)
 }
 func TestNetworkNetwork3Relu(t *testing.T) {
 
@@ -100,7 +100,7 @@ func TestNetworkNetwork3Relu(t *testing.T) {
 		5, 5,
 	})
 
-	net.gradDump(t, x, ytrue)
+	net.gradCheck(t, x, ytrue)
 }
 
 func TestTrainIris(t *testing.T) {
@@ -150,9 +150,9 @@ func TestTrainIris(t *testing.T) {
 //         Network specific testing utilities
 // ******************************************************
 
-// gradDump checks the gradients for all layers using back prop
+// gradCheck checks the gradients for all layers using back prop
 // comparing with brute force gradient
-func (net *Network) gradDump(t *testing.T, x, ytrue *mat.Dense) {
+func (net *Network) gradCheck(t *testing.T, x, ytrue *mat.Dense) {
 
 	var a []*mat.Dense
 	y := x

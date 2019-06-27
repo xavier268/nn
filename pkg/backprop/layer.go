@@ -48,8 +48,8 @@ func (lay *Layer) Dump() {
 	fmt.Printf("Activation : %s\n", lay.act.name())
 	m, v := lay.WStat()
 	fmt.Printf("Weight/Biais mean: %.2e\t var: %.2e\n", m, v)
-	fmt.Printf("Weight :\n%v\n", mat.Formatted(lay.Weights(), mat.Squeeze(), mat.Excerpt(5)))
-	fmt.Printf("Bias :\n%v\n", mat.Formatted(lay.Biais(), mat.Squeeze(), mat.Excerpt(5)))
+	fmt.Printf("Weight :\n%v\n", mat.Formatted(lay.Weights(), mat.Squeeze(), mat.Excerpt(4)))
+	fmt.Printf("Bias :\n%v\n", mat.Formatted(lay.Biais(), mat.Squeeze(), mat.Excerpt(4)))
 }
 
 // Forward pass on mini batch x
