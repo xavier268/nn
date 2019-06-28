@@ -1,6 +1,8 @@
-# gonum-demo
+# nn
 
-My personnal and early experimentation with gonum, implementing a fully connected, multilayer Neural Network with backpropagation.
+My personnal Neural Network package based upon gonum.
+
+This was primarily developped as a practice exercise with gonum, the linear algebra package for golang.
 
 
 
