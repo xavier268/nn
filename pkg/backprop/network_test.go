@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/xavier268/gonum-demo/pkg/iris"
+	"github.com/xavier268/nn/pkg/iris"
 	"gonum.org/v1/gonum/mat"
 )
 
@@ -107,7 +107,7 @@ func TestTrainIris(t *testing.T) {
 	fmt.Println("Testing training on iris dataset")
 	display := true
 
-	x, y := iris.GetIrisXY()
+	x, y := iris.GetXY()
 	Shuffle(x, y)
 	if display {
 		fmt.Println("x\n", mat.Formatted(x, mat.Squeeze(), mat.Excerpt(3)))

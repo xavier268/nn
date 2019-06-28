@@ -16,8 +16,8 @@ type Iris struct {
 	cl             string
 }
 
-//IrisClassNames defines the class names
-var IrisClassNames = make(map[string]int)
+//Names defines the class names
+var Names = make(map[string]int)
 
 func readIrisFile() []Iris {
 	var iris []Iris
@@ -54,20 +54,20 @@ func readIrisFile() []Iris {
 			panic(err)
 		}
 		i.cl = line[4]
-		if _, ok := IrisClassNames[i.cl]; !ok {
-			IrisClassNames[i.cl] = len(IrisClassNames)
+		if _, ok := Names[i.cl]; !ok {
+			Names[i.cl] = len(Names)
 		}
 		iris = append(iris, i)
 	}
 	return iris
 }
 
-// GetIrisXY reads iris data in the X Y matrix format
-func GetIrisXY() (X *mat.Dense, Y *mat.Dense) {
+// GetXY reads iris data in the X Y matrix format
+func GetXY() (X *mat.Dense, Y *mat.Dense) {
 	iris := readIrisFile()
 	r := len(iris)
 	X = mat.NewDense(r, 4, nil)
-	Y = mat.NewDense(r, len(IrisClassNames), nil)
+	Y = mat.NewDense(r, len(Names), nil)
 	X.Apply(func(i, j int, _ float64) float64 {
 		switch j {
 		case 0:
@@ -82,9 +82,9 @@ func GetIrisXY() (X *mat.Dense, Y *mat.Dense) {
 		return 0.
 	}, X)
 	Y.Apply(func(i, j int, _ float64) float64 {
-		if IrisClassNames[iris[i].cl] == j {
+		if Names[iris[i].cl] == j {
 			return 1.
-		} 
+		}
 		return 0.
 	}, Y)
 	return X, Y

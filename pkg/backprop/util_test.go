@@ -6,7 +6,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/xavier268/gonum-demo/pkg/iris"
+	"github.com/xavier268/nn/pkg/iris"
 	"gonum.org/v1/gonum/mat"
 )
 
@@ -30,7 +30,7 @@ func TestSplit(t *testing.T) {
 	fmt.Println("Testing splitting train vs. test")
 	display := false // Set to true to display debug output
 
-	x, _ := iris.GetIrisXY()
+	x, _ := iris.GetXY()
 	xr, xc := x.Dims()
 	tr, ts := SplitTrainTest(x, 0.3)
 	rtr, ctr := tr.Dims()
