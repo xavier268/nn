@@ -1,29 +1,12 @@
-package backprop
+package util
 
 import (
 	"fmt"
-	"math"
-	"math/rand"
 	"testing"
 
 	"github.com/xavier268/nn/pkg/iris"
 	"gonum.org/v1/gonum/mat"
 )
-
-const epsilon = 1e-12
-
-func init() {
-	fmt.Println("Setting test random seed to 42")
-	rand.Seed(42 * 3)
-}
-
-// Check for almost null float64 value
-func check(t *testing.T, v float64) {
-	if math.Abs(v) >= epsilon {
-		fmt.Printf("The value %f should have been nul or very small ?", v)
-		t.Fail()
-	}
-}
 
 func TestSplit(t *testing.T) {
 
@@ -42,10 +25,17 @@ func TestSplit(t *testing.T) {
 		fmt.Println(mat.Formatted(ts, mat.Squeeze(), mat.Excerpt(10)))
 	}
 
-	check(t, float64(xc-ctr))
-	check(t, float64(xc-cts))
-	check(t, float64(xr-rtr-rts))
+	c(xc - ctr)
+	c(xc - cts)
+	c(xr - rtr - rts)
 
+}
+
+func c(i int) {
+	if i != 0 {
+		fmt.Printf("Expected a 0 int and got %d\n", i)
+		panic("int should have been 0 ")
+	}
 }
 
 func TestShuffle(t *testing.T) {
@@ -137,6 +127,13 @@ func TestMaxCol(t *testing.T) {
 		if a != mm[i] {
 			t.FailNow()
 		}
+	}
+
+}
+
+func TestRand(t *testing.T) {
+	if UID() == UID() {
+		t.FailNow()
 	}
 
 }
