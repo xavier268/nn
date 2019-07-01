@@ -135,5 +135,20 @@ func TestRand(t *testing.T) {
 	if UID() == UID() {
 		t.FailNow()
 	}
+}
 
+func TestOnes(t *testing.T) {
+	fmt.Println("Testing Ones")
+	m := NewOnes(5)
+	if r, c := m.Dims(); r != 5 || c != 1 || m.At(3, 0) != 1 {
+		fmt.Println(mat.Formatted(m))
+		panic(t)
+	}
+	p := m.T()
+
+	if r, c := p.Dims(); r != 1 || c != 5 || p.At(0, 3) != 1 {
+		fmt.Println(mat.Formatted(m))
+		fmt.Println(mat.Formatted(p))
+		panic(t)
+	}
 }

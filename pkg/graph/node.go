@@ -109,10 +109,10 @@ func (n *Node) SetDeltaIn(v *mat.Dense) {
 	}
 }
 
-// AddSource attach a datasource to the node
+// AddValueSource attach a datasource to the node
 // This is achieved by creating an Edge with the provided value
 // This Edge is returned.
-func (n *Node) AddSource(x *mat.Dense) *Edge {
+func (n *Node) AddValueSource(x *mat.Dense) *Edge {
 	if x == nil {
 		return nil
 	}
@@ -122,9 +122,9 @@ func (n *Node) AddSource(x *mat.Dense) *Edge {
 	return e
 }
 
-// AddDeltaOut adds a Delata Out "ource" as the target of the node
+// AddDeltaOutSource adds a Delata Out Source" as the target of the node
 // NB : mainly used for testing/debugging
-func (n *Node) AddDeltaOut(x *mat.Dense) *Edge {
+func (n *Node) AddDeltaOutSource(x *mat.Dense) *Edge {
 	if x == nil {
 		return nil
 	}

@@ -39,20 +39,20 @@ func TestAggregatingValues(t *testing.T) {
 	var v *mat.Dense
 	n1 := NewNode("n1")
 
-	n1.AddSource(a)
+	n1.AddValueSource(a)
 	v = n1.GetVin()
 	if r, c := v.Dims(); r != 2 || c != 3 {
 		fmt.Println(mat.Formatted(v, mat.Squeeze()))
 		panic(t)
 	}
 
-	n1.AddSource(b)
+	n1.AddValueSource(b)
 	v = n1.GetVin()
 	if r, c := v.Dims(); r != 2 || c != 5 {
 		fmt.Println(mat.Formatted(v, mat.Squeeze()))
 		panic(t)
 	}
-	n1.AddSource(a)
+	n1.AddValueSource(a)
 	v = n1.GetVin()
 	if r, c := v.Dims(); r != 2 || c != 8 {
 		fmt.Println(mat.Formatted(v, mat.Squeeze()))
@@ -63,7 +63,7 @@ func TestAggregatingValues(t *testing.T) {
 
 	n1 = NewNode("n1-delta")
 
-	n1.AddDeltaOut(a)
+	n1.AddDeltaOutSource(a)
 	v = n1.GetDeltaOut()
 	if v == nil {
 		fmt.Println(n1)
@@ -73,13 +73,13 @@ func TestAggregatingValues(t *testing.T) {
 		panic(t)
 	}
 
-	n1.AddDeltaOut(b)
+	n1.AddDeltaOutSource(b)
 	v = n1.GetDeltaOut()
 	if r, c := v.Dims(); r != 2 || c != 5 {
 		fmt.Println(mat.Formatted(v, mat.Squeeze()))
 		panic(t)
 	}
-	n1.AddDeltaOut(a)
+	n1.AddDeltaOutSource(a)
 	v = n1.GetDeltaOut()
 	if r, c := v.Dims(); r != 2 || c != 8 {
 		fmt.Println(mat.Formatted(v, mat.Squeeze()))

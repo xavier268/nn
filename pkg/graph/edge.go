@@ -18,6 +18,10 @@ type Edge struct {
 // Connect construct Edge of width w and connect both nodes
 // using this Edge
 func Connect(f, t *Node, w int) *Edge {
+	if f != nil && t != nil && f.ID == t.ID {
+		// Attempting connection to self !
+		panic("Attempted connection to self !?")
+	}
 	e := new(Edge)
 	e.W = w
 	e.From, e.To = f, t
