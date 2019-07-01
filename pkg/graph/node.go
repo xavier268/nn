@@ -59,11 +59,6 @@ func (n *Node) SetVout(v *mat.Dense) {
 		return
 	}
 
-	if len(n.To) == 1 {
-		n.To[0].V = v
-		return
-	}
-
 	r, _ := v.Dims()
 	c := 0
 	for _, e := range n.To {
@@ -93,11 +88,6 @@ func (n *Node) GetDeltaOut() *mat.Dense {
 // SetDeltaIn dispatches the delataIn  value to the inboud Edges
 func (n *Node) SetDeltaIn(v *mat.Dense) {
 	if len(n.From) == 0 {
-		return
-	}
-
-	if len(n.From) == 1 {
-		n.From[0].Delta = v
 		return
 	}
 

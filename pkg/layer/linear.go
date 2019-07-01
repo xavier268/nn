@@ -43,10 +43,10 @@ func (l *Linear) Init(_ InitParam) {
 // Assumes values are available (both V and Delta)
 func (l *Linear) Backward(doGrad bool) (grad *mat.Dense) {
 
-	dout := l.GetDeltaOut()
+	dout := l.GetDeltaOut() // n x out
 	din := new(mat.Dense)
-	din.Mul(dout, l.w.T())
-	l.SetDeltaIn(din)
+	din.Mul(dout, l.w.T()) // (n x out )x(out x in+1) => (n x in+1)
+	l.SetDeltaIn(din)      // Removing extra column not necessary as it will not be passed to the Edges ?
 	if !doGrad {
 		// No grad requested
 		return nil

@@ -1,8 +1,11 @@
 package layer
 
-import "gonum.org/v1/gonum/mat"
+import (
+	"github.com/xavier268/nn/pkg/cost"
+	"gonum.org/v1/gonum/mat"
+)
 
-// Processor are Node that can compute for/backward.
+// Processor are Node that can compute for/backward and update Edges
 type Processor interface {
 	Forward()
 	Backward(computeGrad bool) *mat.Dense
@@ -18,8 +21,11 @@ type Trainable interface {
 // TrainParam parameters
 type TrainParam struct {
 	Learning, L2 float64
+	Cost         cost.Coster
+	Rounds       int
 }
 
 // InitParam parameters
 type InitParam struct {
+	// Reserved for future use
 }
