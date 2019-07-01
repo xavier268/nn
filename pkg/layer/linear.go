@@ -23,7 +23,7 @@ func NewLinear(name string, nin, nout int) *Linear {
 	return &Linear{graph.NewNode(name), mat.NewDense(nin+1, nout, nil)}
 }
 
-// Forward computes and store forward values
+// Forward computes and stores forward values
 // No recursion, assumes input is already available.
 func (l *Linear) Forward() {
 	x := util.AppendOnes(l.GetVin())
@@ -37,24 +37,23 @@ func (l *Linear) Init(_ InitParam) {
 	l.w.Apply(func(_, _ int, _ float64) float64 {
 		return rand.Float64()*2. - 1.
 	}, l.w)
-
 }
 
-//Backward : assume all inputs (X and DOut) are available,
-// no recursion performed
-// No need for previous forward (included)
+// Backward : compute and stores deltas.
+// Assumes values are available (both V and Delta)
 func (l *Linear) Backward(doGrad bool) (grad *mat.Dense) {
-	xx := util.AppendOnes(l.GetVin())
+
 	dout := l.GetDeltaOut()
 	din := new(mat.Dense)
 	din.Mul(dout, l.w.T())
 	l.SetDeltaIn(din)
-
 	if !doGrad {
+		// No grad requested
 		return nil
 	}
+	x := util.AppendOnes(l.GetVin())
 	grad = new(mat.Dense)
-	grad.Mul(xx.T(), dout)
+	grad.Mul(x.T(), dout)
 	return grad
 }
 
