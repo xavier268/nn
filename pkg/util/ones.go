@@ -19,6 +19,7 @@ func AppendOnes(x mat.Matrix) *mat.Dense {
 	r, c := x.Dims()
 	m := mat.NewDense(r, c+1, nil)
 	m.Augment(x, NewOnes(r))
+	return m
 }
 
 // At see Matrix
