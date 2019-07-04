@@ -17,3 +17,4 @@ func SplitTrainTest(x *mat.Dense, ratio float64) (train, test *mat.Dense) {
 	test.CloneFrom(x.Slice(n-nt, n, 0, c))
 	return train, test
 }
+

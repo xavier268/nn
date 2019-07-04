@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/xavier268/nn/pkg/iris"
+	"github.com/xavier268/nn/pkg/util"
 	"gonum.org/v1/gonum/mat"
 )
 
@@ -108,14 +109,14 @@ func TestTrainIris(t *testing.T) {
 	display := true
 
 	x, y := iris.GetXY()
-	Shuffle(x, y)
+	util.Shuffle(x, y)
 	if display {
 		fmt.Println("x\n", mat.Formatted(x, mat.Squeeze(), mat.Excerpt(3)))
 		fmt.Println("y\n", mat.Formatted(y, mat.Squeeze(), mat.Excerpt(3)))
 
 	}
-	xtrain, xvalidate := SplitTrainTest(x, 0.2)
-	ytrain, yvalidate := SplitTrainTest(y, 0.2)
+	xtrain, xvalidate := util.SplitTrainTest(x, 0.2)
+	ytrain, yvalidate := util.SplitTrainTest(y, 0.2)
 
 	if display {
 		fmt.Println("xtrain\n", mat.Formatted(xtrain, mat.Squeeze(), mat.Excerpt(3)))
