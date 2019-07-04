@@ -47,7 +47,7 @@ func TestNetworkNetwork2(t *testing.T) {
 	x := mat.NewDense(1, 3, []float64{
 		0, 1, 2,
 	})
-	// Assume ground truth is zero
+
 	ytrue := mat.NewDense(1, 2, []float64{
 		2, 4,
 	})
@@ -70,7 +70,7 @@ func TestNetworkNetwork3Sigmoid(t *testing.T) {
 		3, 4, 5,
 		6, 7, 8,
 	})
-	// Assume ground truth is zero
+
 	ytrue := mat.NewDense(3, 2, []float64{
 		2, 4,
 		7, 8,
@@ -94,7 +94,7 @@ func TestNetworkNetwork3Relu(t *testing.T) {
 		3, 4, 5,
 		6, 7, 8,
 	})
-	// Assume ground truth is zero
+
 	ytrue := mat.NewDense(3, 2, []float64{
 		2, 4,
 		7, 8,
@@ -158,7 +158,7 @@ func (net *Network) gradCheck(t *testing.T, x, ytrue *mat.Dense) {
 	var a []*mat.Dense
 	y := x
 	a = append(a, y)
-	// We store successif activation vectors in a, starting with input
+	// We store successive activation vectors in a, starting with input
 	for _, ll := range net.layers {
 		y = ll.Forward(y)
 		a = append(a, y)
